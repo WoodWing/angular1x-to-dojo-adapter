@@ -1,7 +1,7 @@
 # angular1x-to-dojo-adapter
 Adapter to let Angular 1.x directives work within a Dojo application.
 ## Install / Setup
-To make use of this adapter we will have to install it through NPM first. We can do that with: ```bower install angular1x-to-dojo-adapter```
+To make use of this adapter we will have to install it through Bower first. We can do that with: ```bower install angular1x-to-dojo-adapter```
 We will have to load Angular in the Dojo application in which we want to use this adapter. This can be done by adding this line to the HEAD tag of your index.html file (path can be different for our application configuration):
 ```html
 <script type='text/javascript' src="path/to/bower_components/angular/angular.min.js.js"></script>
