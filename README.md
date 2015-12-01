@@ -1,8 +1,8 @@
 # angular1x-to-dojo-adapter
 Adapter to let Angular 1.x directives work within a Dojo application.
 ## Install / Setup
-To make use of this adapter you will have to install it through NPM first. You can do that with: ```bower install angular1x-to-dojo-adapter```
-You will have to load Angular in the Dojo application in which you want to use this adapter. You can do this by adding this line to the HEAD tag of your index.html file (path can be different for your application configuration):
+To make use of this adapter we will have to install it through NPM first. We can do that with: ```bower install angular1x-to-dojo-adapter```
+We will have to load Angular in the Dojo application in which we want to use this adapter. This can be done by adding this line to the HEAD tag of your index.html file (path can be different for our application configuration):
 ```html
 <script type='text/javascript' src="path/to/bower_components/angular/angular.min.js.js"></script>
 ```
@@ -44,7 +44,7 @@ Here we added the 'ng-class' directive to add a CSS class when mobile is used. T
 </people-directive>
 ```
 ##### Use Angular 'ng-repeat' together with an Angular controller
-What this example shows is that it is perfectly fine to use the adapter without a Angular directive component. Here we use a controller which provides data for the Angular repeater to make a list of people.
+What this example shows is that it is perfectly fine to use the adapter without an Angular directive component. Here we use a controller which provides data for the Angular repeater to make a list of people.
 ```html
 <div data-dojo-type="bower/Angular1xToDojoAdapter"
     data-dojo-props="$modules: 'people'"
