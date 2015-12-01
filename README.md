@@ -9,11 +9,11 @@ You will have to load Angular in the Dojo application in which you want to use t
 Now we have to tell Dojo where to look for the adapter. We can easily do this by using Dojo's Aliases.
 ```js
 window.dojoConfig = {
-    [...]
+    ...
     aliases: [
         ["bower/Angular1xToDojoAdapter", "path/to/bower_components/angular1x-to-dojo-adapter/dist/angular1x-to-dojo-adapter.min"]
     ]
-    [...]
+    ...
 }
 ```
 ## Usage
