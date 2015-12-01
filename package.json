@@ -1,0 +1,15 @@
+{
+  "devDependencies": {
+    "mkdirp": "latest",
+    "eslint": "latest",
+    "uglify-js": "latest"
+  },
+  "scripts": {
+    "build": "npm run lint && npm run build:js",
+    "build:js": "npm run uglify",
+    "mkDirDist": "mkdirp ./dist",
+    "lint": "eslint ./src/**.js",
+    "uglify": "uglifyjs ./dist/angular1x-to-dojo-adapter.js -c -m -o ./dist/angular1x-to-dojo-adapter.min.js",
+    "prebuild": "npm run mkDirDist"
+  }
+}
