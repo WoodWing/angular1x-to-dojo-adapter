@@ -26,7 +26,8 @@
         "browser": true
     },
     "globals": {
-        "angular": true
+        "angular": true,
+        "define": true
     },
     "extends": "eslint:recommended"
 }

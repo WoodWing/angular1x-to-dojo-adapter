@@ -8,14 +8,12 @@ define(["dojo/_base/declare", "dijit/_WidgetBase"],
 			constructor: function(attrs, domNode){
 				var i;
 				var attribute;
-				var attributeValueAsString;
 				var attributeNewName;
 				var eventPrefixRegExp = /^on(?=.+?)/;
 
 				// Loop over attributes and convert native event attributes to Angular variant
 				for(i=0;i<domNode.attributes.length;i++){
 					attribute = domNode.attributes[i];
-					attributeValueAsString = attribute.value.toString();
 
 					// We only need to handler event attributes.
 					if(eventPrefixRegExp.test(attribute.name)){
