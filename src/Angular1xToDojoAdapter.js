@@ -2,7 +2,6 @@ define(["dojo/_base/declare", "dijit/_WidgetBase"],
 	function(declare, _WidgetBase){
 		return declare([_WidgetBase], {
 			$modules: null,
-			$domNodeObserver: null,
 			scope: null,
 
 			constructor: function(attrs, domNode){
@@ -82,7 +81,7 @@ define(["dojo/_base/declare", "dijit/_WidgetBase"],
 
 			destroy: function(){
 				this.inherited(arguments);
-				this.domNodeObserver.disconnect();
+				this.scope = null;
 			},
 
 			// Changes from Angular 1.x
