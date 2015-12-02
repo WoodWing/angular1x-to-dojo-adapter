@@ -11,7 +11,7 @@ Now we have to tell Dojo where to look for the adapter. We can easily do this by
 window.dojoConfig = {
     ...
     aliases: [
-        ["bower/Angular1xToDojoAdapter", "path/to/bower_components/angular1x-to-dojo-adapter/dist/angular1x-to-dojo-adapter.min"]
+        ["bower/Angular1xToDojoAdapter", "path/to/bower_components/angular1x-to-dojo-adapter/dist/Angular1xToDojoAdapter.min"]
     ]
     ...
 }
