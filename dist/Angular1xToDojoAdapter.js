@@ -32,8 +32,17 @@ define(["dojo/_base/declare", "dijit/_WidgetBase"],
 			postCreate: function(){
 				this.inherited(arguments);
 
+				// As this is not an actual AngularJS app we need to manually add $rootElement.
+				angular.module('ngMonkey', []).provider({
+					$rootElement:function() {
+						this.$get = function() {
+							return angular.element(document);
+						};
+					}
+				});
+
 				// Retrieve injector to bootstrap our adapter
-				var injector = angular.injector(["ng"].concat(this.$modules));
+				var injector = angular.injector(["ng", 'ngMonkey'].concat(this.$modules));
 
 				// Get our Angular dependencies to bootstrap the adapter
 				injector.invoke(["$compile", "$rootScope", function($compile, $rootScope){
