@@ -22,14 +22,15 @@ All 'data-dojo-props' properties of Dojo will be added as attribute binding to t
 In this example you see that we pass people data to the property/attribute 'people', which is used within the Angular directive component to populate the list with people.
 ```html
 <people-directive data-dojo-type="bower/Angular1xToDojoAdapter"
-	data-dojo-props="people: this.peopleData, $modules: 'people'">
+	data-dojo-props="people: this.peopleData, $modules: 'people'" people="people">
 </people-directive>
 ```
 ##### Use an Angular directive component with events.
 In this example we show how to use events which are triggered by Angular but handled in Dojo.
 ```html
 <people-directive data-dojo-type="bower/Angular1xToDojoAdapter"
-	data-dojo-props="data: this.peopleData, onClick: this.onClick, $modules: 'people'"
+	data-dojo-props="people: this.peopleData, onClick: this.onClick, $modules: 'people'"
+    people="people"
 	onclick="this.onClick(event)">
 </people-directive>
 ```
@@ -39,7 +40,8 @@ Here we added the 'ng-class' directive to add a CSS class when mobile is used. T
 <people-directive data-dojo-type="bower/Angular1xToDojoAdapter"
     ng-class="{mobile: vm.isMobile}"
     ng-controller="PeopleController as vm"
-	data-dojo-props="data: vm.peopleData, onClick: this.onClick, $modules: 'people'"
+	data-dojo-props="people: vm.peopleData, onClick: this.onClick, $modules: 'people'"
+    people="people"
 	onclick="this.onClick(event)">
 </people-directive>
 ```
