@@ -17,7 +17,7 @@ window.dojoConfig = {
 }
 ```
 ## Usage
-All 'data-dojo-props' properties of Dojo will be added as attribute binding to the DOM element for Angular to compile. The module of the directive and the module dependencies should be added as a Dojo property names '$modules' in 'data-dojo-props'. The value for this property can be either a single String or an Array of Strings.
+All 'data-dojo-props' properties of Dojo will be added to the Angular scope for usage with attributes binding. The module of the directive and the module dependencies should be added as a Dojo property names '$modules' in 'data-dojo-props'. The value for this property can be either a single String or an Array of Strings.
 ##### Use an Angular directive component with data passed from Dojo.
 In this example you see that we pass people data to the property/attribute 'people', which is used within the Angular directive component to populate the list with people.
 ```html
