@@ -1,6 +1,6 @@
 define(["dojo/_base/declare", "dijit/_WidgetBase"],
 	function(declare, _WidgetBase){
-		return declare([_WidgetBase], {
+		var classObject = declare([_WidgetBase], {
 			$modules: null,
 			scope: null,
 
@@ -32,17 +32,8 @@ define(["dojo/_base/declare", "dijit/_WidgetBase"],
 			postCreate: function(){
 				this.inherited(arguments);
 
-				// As this is not an actual AngularJS app we need to manually add $rootElement.
-				angular.module('ngMonkey', []).provider({
-					$rootElement:function() {
-						this.$get = function() {
-							return angular.element(document);
-						};
-					}
-				});
-
 				// Retrieve injector to bootstrap our adapter
-				var injector = angular.injector(["ng", 'ngMonkey'].concat(this.$modules));
+				var injector = window.angular.injector(["ngMonkey"].concat(this.$modules));
 
 				// Get our Angular dependencies to bootstrap the adapter
 				injector.invoke(["$compile", "$rootScope", function($compile, $rootScope){
@@ -55,7 +46,7 @@ define(["dojo/_base/declare", "dijit/_WidgetBase"],
 
 					// Create Adapter Scope to use for compiling the DOM element.
 					this.scope = $rootScope.$new();
-					angular.extend(this.scope, this.params);
+					window.angular.extend(this.scope, this.params);
 
 					// Add all Angular related data in the Adapter Scope as attribute on the DOM elment for compilation.
 					for(scopeKey in this.scope){
@@ -66,9 +57,6 @@ define(["dojo/_base/declare", "dijit/_WidgetBase"],
 						}
 
 						if(this.scope.hasOwnProperty(scopeKey) && /^[a-z]/i.test(scopeKey)){
-							// Normalize property to attribute scopeKey, and set value.
-							this.domNode.setAttribute(scopeKey.split(/(?=[A-Z])/).join("-").toLowerCase(), scopeKey);
-
 							// Listen for changes to params and sync to adapter scope.
 							for(paramsKey in this.params){
 								this.watch(paramsKey, this._onParamsChange);
@@ -115,5 +103,27 @@ define(["dojo/_base/declare", "dijit/_WidgetBase"],
 				}
 			}
 		});
+
+		// As this is not an actual AngularJS app we need to manually add $rootElement.
+		window.angular.module('ngMonkey', ["ng"]).provider({
+			$rootElement: function() {
+				this.$get = function() {
+					return window.angular.element(document);
+				};
+			}
+		});
+
+		classObject.invoke = function invoke(invokeFn, modules){
+			if(modules){
+				modules = ["ng"].concat(modules);
+			} else {
+				modules = ["ng"];
+			}
+
+			var injector = window.angular.injector(modules);
+			injector.invoke(invokeFn);
+		};
+
+		return classObject;
 	}
 );
