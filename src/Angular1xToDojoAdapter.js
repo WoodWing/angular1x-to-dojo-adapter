@@ -37,8 +37,15 @@ define(["dojo/_base/declare", "dijit/_WidgetBase"],
 
 				// Get our Angular dependencies to bootstrap the adapter
 				injector.invoke(["$compile", "$rootScope", function($compile, $rootScope){
+					var i;
 					var scopeKey;
-					var paramsKey;
+					var paramKey;
+					var paramValue;
+					var paramInterpolationMatches;
+					var paramExpressionMatches;
+					var interpolationRegExp = /{{[^{}]+}}/g;
+					var biDirectionalBindingRegExp = /^[a-z$_][a-z$_0-9]*?$/i;
+					var expressionRegExp = /[a-z$_][a-z$_0-9]*/gi;
 
 					// Delete Dojo or Angular 1.x Adapter specific data from the params.
 					delete this.params.$modules;
@@ -58,8 +65,30 @@ define(["dojo/_base/declare", "dijit/_WidgetBase"],
 
 						if(this.scope.hasOwnProperty(scopeKey) && /^[a-z]/i.test(scopeKey)){
 							// Listen for changes to params and sync to adapter scope.
-							for(paramsKey in this.params){
-								this.watch(paramsKey, this._onParamsChange);
+							for(paramKey in this.params){
+								paramValue = this.params[paramKey];
+
+								if(!paramValue) continue;
+
+								paramInterpolationMatches = paramValue.match(interpolationRegExp);
+
+								// Interpolation: attr="{{value}}"
+								if(paramInterpolationMatches){
+									for(i=0;i<paramInterpolationMatches.length;i++){
+										this.watch(paramInterpolationMatches[i].replace(/[{}]/g, ""), this._onParamsChange);
+									}
+								}
+								// Bi-directional binding: attr="value"
+								else if(biDirectionalBindingRegExp.test(paramValue)) {
+									this.watch(paramValue, this._onParamsChange);
+								}
+								// Expression: attr="value1 + (value2 * 5)"
+								else {
+									paramExpressionMatches = paramValue.match(expressionRegExp);
+									for(i=0;i<paramExpressionMatches.length;i++){
+										this.watch(paramExpressionMatches[i], this._onParamsChange);
+									}
+								}
 							}
 
 							// Listen for changes on the Adapter Scope to bind back to the Dojo parent.
