@@ -97,11 +97,7 @@ define(["dojo/_base/declare", "dijit/_WidgetBase"],
 					}
 
 					// Compile the DOM element
-					$compile(this.domNode)(this.scope, function(element, scope){
-						// Replace Dojo parsed node with Angular 1.x parsed node
-						this.domNode.parentNode.replaceChild(element[0], this.domNode);
-						this.domNode = element[0];
-					}.bind(this));
+					$compile(this.domNode)(this.scope);
 				}.bind(this)]);
 			},
 
