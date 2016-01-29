@@ -1,6 +1,6 @@
 define(["dojo/_base/declare", "dijit/_WidgetBase"],
 	function(declare, _WidgetBase){
-		return declare([_WidgetBase], {
+		var classObject = declare([_WidgetBase], {
 			$modules: null,
 			scope: null,
 
@@ -32,22 +32,20 @@ define(["dojo/_base/declare", "dijit/_WidgetBase"],
 			postCreate: function(){
 				this.inherited(arguments);
 
-				// As this is not an actual AngularJS app we need to manually add $rootElement.
-				angular.module('ngMonkey', []).provider({
-					$rootElement:function() {
-						this.$get = function() {
-							return angular.element(document);
-						};
-					}
-				});
-
 				// Retrieve injector to bootstrap our adapter
-				var injector = angular.injector(["ng", 'ngMonkey'].concat(this.$modules));
+				var injector = window.angular.injector(["ngMonkey"].concat(this.$modules));
 
 				// Get our Angular dependencies to bootstrap the adapter
 				injector.invoke(["$compile", "$rootScope", function($compile, $rootScope){
+					var i;
 					var scopeKey;
-					var paramsKey;
+					var paramKey;
+					var paramValue;
+					var paramInterpolationMatches;
+					var paramExpressionMatches;
+					var interpolationRegExp = /{{[^{}]+}}/g;
+					var biDirectionalBindingRegExp = /^[a-z$_][a-z$_0-9]*?$/i;
+					var expressionRegExp = /[a-z$_][a-z$_0-9]*/gi;
 
 					// Delete Dojo or Angular 1.x Adapter specific data from the params.
 					delete this.params.$modules;
@@ -55,7 +53,7 @@ define(["dojo/_base/declare", "dijit/_WidgetBase"],
 
 					// Create Adapter Scope to use for compiling the DOM element.
 					this.scope = $rootScope.$new();
-					angular.extend(this.scope, this.params);
+					window.angular.extend(this.scope, this.params);
 
 					// Add all Angular related data in the Adapter Scope as attribute on the DOM elment for compilation.
 					for(scopeKey in this.scope){
@@ -66,12 +64,31 @@ define(["dojo/_base/declare", "dijit/_WidgetBase"],
 						}
 
 						if(this.scope.hasOwnProperty(scopeKey) && /^[a-z]/i.test(scopeKey)){
-							// Normalize property to attribute scopeKey, and set value.
-							this.domNode.setAttribute(scopeKey.split(/(?=[A-Z])/).join("-").toLowerCase(), scopeKey);
-
 							// Listen for changes to params and sync to adapter scope.
-							for(paramsKey in this.params){
-								this.watch(paramsKey, this._onParamsChange);
+							for(paramKey in this.params){
+								paramValue = this.params[paramKey];
+
+								if(!paramValue) continue;
+
+								paramInterpolationMatches = paramValue.match(interpolationRegExp);
+
+								// Interpolation: attr="{{value}}"
+								if(paramInterpolationMatches){
+									for(i=0;i<paramInterpolationMatches.length;i++){
+										this.watch(paramInterpolationMatches[i].replace(/[{}]/g, ""), this._onParamsChange);
+									}
+								}
+								// Bi-directional binding: attr="value"
+								else if(biDirectionalBindingRegExp.test(paramValue)) {
+									this.watch(paramValue, this._onParamsChange);
+								}
+								// Expression: attr="value1 + (value2 * 5)"
+								else {
+									paramExpressionMatches = paramValue.match(expressionRegExp);
+									for(i=0;i<paramExpressionMatches.length;i++){
+										this.watch(paramExpressionMatches[i], this._onParamsChange);
+									}
+								}
 							}
 
 							// Listen for changes on the Adapter Scope to bind back to the Dojo parent.
@@ -80,11 +97,7 @@ define(["dojo/_base/declare", "dijit/_WidgetBase"],
 					}
 
 					// Compile the DOM element
-					$compile(this.domNode)(this.scope, function(element, scope){
-						// Replace Dojo parsed node with Angular 1.x parsed node
-						this.domNode.parentNode.replaceChild(element[0], this.domNode);
-						this.domNode = element[0];
-					}.bind(this));
+					$compile(this.domNode)(this.scope);
 				}.bind(this)]);
 			},
 
@@ -115,5 +128,27 @@ define(["dojo/_base/declare", "dijit/_WidgetBase"],
 				}
 			}
 		});
+
+		// As this is not an actual AngularJS app we need to manually add $rootElement.
+		window.angular.module('ngMonkey', ["ng"]).provider({
+			$rootElement: function() {
+				this.$get = function() {
+					return window.angular.element(document);
+				};
+			}
+		});
+
+		classObject.invoke = function invoke(invokeFn, modules){
+			if(modules){
+				modules = ["ng"].concat(modules);
+			} else {
+				modules = ["ng"];
+			}
+
+			var injector = window.angular.injector(modules);
+			injector.invoke(invokeFn);
+		};
+
+		return classObject;
 	}
 );
