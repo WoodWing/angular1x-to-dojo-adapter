@@ -45,7 +45,7 @@ define(["dojo/_base/declare", "dijit/_WidgetBase"],
 					var paramExpressionMatches;
 					var interpolationRegExp = /{{[^{}]+}}/g;
 					var biDirectionalBindingRegExp = /^[a-z$_][a-z$_0-9]*?$/i;
-					var expressionRegExp = /[a-z$_][a-z$_0-9]*/gi;
+					var expressionRegExp = /[a-z$_0-9]*/gi;
 
 					// Delete Dojo or Angular 1.x Adapter specific data from the params.
 					delete this.params.$modules;
